@@ -343,7 +343,7 @@ class WildbookClient:
         response = self.session.get(url, timeout=DEFAULT_TIMEOUT)
         return self._handle_response(response)
 
-    def search_occurrences(
+    def search_sightings(
         self,
         query: dict[str, Any],
         from_: int = 0,
@@ -351,7 +351,12 @@ class WildbookClient:
         sort: str | None = None,
         sort_order: str | None = None
     ) -> dict[str, Any]:
-        """Search for occurrences using OpenSearch/Elasticsearch query syntax.
+        """Search for sightings using OpenSearch/Elasticsearch query syntax.
+
+        Note: this calls the `/search/occurrence` endpoint. "Occurrence" is
+        the underlying Wildbook API/data-model term; "sighting" is the
+        current user-facing term, which this client's public method names
+        follow.
 
         Args:
             query: OpenSearch query dictionary (e.g., {'match_all': {}})
@@ -371,9 +376,9 @@ class WildbookClient:
             BadRequestError: If query is invalid
 
         Example:
-            >>> results = client.search_occurrences({'match_all': {}})
-            >>> for occ in results.get('hits', []):
-            ...     print(occ['id'], occ.get('sightingPlatform'))
+            >>> results = client.search_sightings({'match_all': {}})
+            >>> for sighting in results.get('hits', []):
+            ...     print(sighting['id'], sighting.get('sightingPlatform'))
         """
         return self._search(
             API_SEARCH_OCCURRENCE,
@@ -385,23 +390,23 @@ class WildbookClient:
         )
 
     @_requires_auth
-    def get_occurrence(self, occurrence_id: str) -> dict[str, Any]:
-        """Get details of a specific occurrence by UUID.
+    def get_sighting(self, sighting_id: str) -> dict[str, Any]:
+        """Get details of a specific sighting by UUID.
 
         Args:
-            occurrence_id: Occurrence UUID
+            sighting_id: Sighting UUID
 
         Returns:
-            Occurrence details dictionary
+            Sighting details dictionary
 
         Raises:
             NotAuthenticatedError: If not logged in
-            NotFoundError: If occurrence doesn't exist
+            NotFoundError: If sighting doesn't exist
 
         Example:
-            >>> occurrence = client.get_occurrence('123e4567-e89b-12d3-a456-426614174000')
+            >>> sighting = client.get_sighting('123e4567-e89b-12d3-a456-426614174000')
         """
-        url = self._make_url(f'{API_OCCURRENCES_BASE}{occurrence_id}')
+        url = self._make_url(f'{API_OCCURRENCES_BASE}{sighting_id}')
         response = self.session.get(url, timeout=DEFAULT_TIMEOUT)
         return self._handle_response(response)
 
