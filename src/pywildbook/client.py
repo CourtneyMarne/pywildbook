@@ -393,6 +393,11 @@ class WildbookClient:
     def get_sighting(self, sighting_id: str) -> dict[str, Any]:
         """Get details of a specific sighting by UUID.
 
+        Note: this calls the `/occurrences/{id}` endpoint. "Occurrence" is
+        the underlying Wildbook API/data-model term; "sighting" is the
+        current user-facing term, which this client's public method names
+        follow.
+
         Args:
             sighting_id: Sighting UUID
 
